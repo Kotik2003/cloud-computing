@@ -1,0 +1,8 @@
+#cloud-config
+users:
+  - name: ubuntu
+    groups: sudo
+    shell: /bin/bash
+    sudo: 'ALL=(ALL) NOPASSWD:ALL'
+    ssh_authorized_keys:
+      - ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAACAQDK6ncNXXfu5nDgfBA1bpUU4JCTlFiGbjPpe0xpr8fpKrCMHCFDBBsrZKAb6xbldLi3symiRTYlm1AfhsBAbTuWkNw2V6lqeeuwYpfHc+wOMg5TLPs+nE/XfYPceYTCMLDlxXoXevBhgOyWp98au/Ji3clZM95PwFvH1xTibsiwDc3jmvxdK/Dhlop/U7uoQmu0AdqNbTdMhVzWYUwdaCx2wpfOUrJ4vXpIhhakFh7BkEViKOd+MYqQED7wUkdAZ6L2OTHEP5F4Ltquk1v8tcDzodZ0sbE/19eUu8dWfZtxDadln31B88LdqwKjcmyok3F7Zwe9M15AlA8G69mYQI2e/f7jt/iwcBVMQAKkjQnW8BNEGmuHUNeRGMzNVpzf7HjHp4Zya7q3v0zg2/QBWJLHMzg9073LeS22Ttv7Ah1XcLCN2WGiTxFaXsT2LD33dvkaIel2iuXdy6AE12qxITbm/XZ095NTr7O543BsB6+OScO/lScqf3zTHnYFOXXU2HJxkHXe9YMxBU7VwoTA0sbHkNK+XpEfmQX0Ms29Q8UHi4ow7qsTbGpxFkqRQqNDwWJHAUhNfG4LNTvWU0+BBnnTzcmShNZAbGGxs+RPnIexB7XM37Cq3XBW02rUtXhoDbBAtgvixCPmlXK/bmmpxCUXNYEBxJlsUa0Thg672IZ2tQ== OpenStack filonov key
