@@ -1,0 +1,106 @@
+- name: Create production server on Yandex.Cloud
+  hosts: localhost
+  connection: local
+  vars:
+    terraform_rc_path: .terraformrc
+    terraform_path: ./terraform-yandex
+  tasks:
+    - name: Prepare TF (set Yandex mirror)
+      copy:
+        src: "{{ terraform_rc_path }}"
+        dest: ~/.terraformrc
+
+    - name: Run terraform for Yandex.Cloud
+      terraform:
+        project_path: "{{ terraform_path }}"
+        force_init: yes
+        state: present
+      register: trfrm
+
+    - name: Export server IP to file
+      lineinfile:
+        path: ~/YC_SERVER_IP
+        regexp: '^YC_SERVER_IP='
+        line: "YC_SERVER_IP={{ trfrm.outputs.servers.value.serverip }}"
+        mode: '0644'
+        create: yes
+
+    - name: Add instance host
+      add_host:
+        name: tpb-server
+        groups: nodes
+        ansible_user: ubuntu
+        ansible_host: "{{ trfrm.outputs.servers.value.serverip }}"
+        ansible_ssh_private_key_file: ~/.ssh/filonov
+        ansible_ssh_common_args: "-o StrictHostKeyChecking=no"
+
+
+- name: Wait for instance to become reachable
+  hosts: localhost
+  connection: local
+  tasks:
+    - name: Wait for SSH port on Yandex instance
+      wait_for:
+        host: "{{ trfrm.outputs.servers.value.serverip }}"
+        port: 22
+        timeout: 300
+
+- name: Start production database on Yandex instance
+  hosts: nodes
+  become: yes
+  tasks:
+    - name: Download MongoDB 7.0 GPG Key (ASCII)
+      get_url:
+        url: https://pgp.mongodb.com/server-7.0.asc
+        dest: /etc/apt/keyrings/mongodb-server-7.0.asc
+        mode: '0644'
+
+    - name: Convert GPG key to binary format
+      command: >
+        gpg --dearmor -o /etc/apt/keyrings/mongodb-server-7.0.gpg
+        /etc/apt/keyrings/mongodb-server-7.0.asc
+      args:
+        creates: /etc/apt/keyrings/mongodb-server-7.0.gpg
+
+    - name: Add MongoDB apt repository
+      copy:
+        dest: /etc/apt/sources.list.d/mongodb-org-7.0.list
+        content: |
+          deb [signed-by=/etc/apt/keyrings/mongodb-server-7.0.gpg] https://repo.mongodb.org/apt/ubuntu jammy/mongodb-org/7.0 multiverse
+
+    - name: Update apt and install MongoDB
+      apt:
+        update_cache: yes
+        name: mongodb-org
+        state: present
+
+    - name: Start and enable MongoDB service
+      service:
+        name: mongod
+        state: started
+        enabled: yes
+
+- name: Prepare production for deploy on Yandex instance
+  hosts: nodes
+  become: yes
+  vars:
+    service_path: "{{ playbook_dir }}/moviebot.service"
+  tasks:
+    - name: Install JDK
+      apt:
+        update_cache: yes
+        name: openjdk-21-jdk-headless
+        state: present
+
+    - name: Create bot app service
+      copy:
+        src: "{{ service_path }}"
+        dest: /etc/systemd/system/moviebot.service
+        mode: '0644'
+
+    - name: Reload systemd and ensure moviebot is stopped
+      systemd:
+        daemon_reload: yes
+        name: moviebot
+        state: stopped
+
