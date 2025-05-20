@@ -66,7 +66,7 @@ resource "yandex_vpc_subnet" "subnet-1" {
   name           = "vazhenina-subnet"
   zone           = "ru-central1-a"
   network_id     = data.yandex_vpc_network.existing.id
-  v4_cidr_blocks = ["192.168.199.0/24"]
+  v4_cidr_blocks = ["192.168.80.0/24"]
 }
 
 resource "yandex_vpc_security_group" "group1" {
