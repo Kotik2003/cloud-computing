@@ -28,8 +28,8 @@ provider "yandex" {
 }
 
 
-resource "yandex_compute_disk" "filonov-disk" {
-  name     = "filonov-disk"
+resource "yandex_compute_disk" "vazhenina_disk" {
+  name     = "vazhenina-disk"
   type     = "network-hdd"
   zone     = "ru-central1-a"
   size     = "20"
@@ -37,7 +37,7 @@ resource "yandex_compute_disk" "filonov-disk" {
 }
 
 resource "yandex_compute_instance" "vm-1" {
-  name = "filonov-terraform"
+  name = "vazhenina-terraform"
 
   resources {
     cores  = 2 # 2, 4, 6, 8, 10, 12, 14, 16, 20, 24, 28, 32 allowed
@@ -45,7 +45,7 @@ resource "yandex_compute_instance" "vm-1" {
   }
 
   boot_disk {
-    disk_id = yandex_compute_disk.filonov-disk.id
+    disk_id = yandex_compute_disk.vazhenina_disk.id
   }
 
   network_interface {
@@ -63,14 +63,14 @@ data "yandex_vpc_network" "existing" {
   folder_id = data.external.ya_auth.result.folder_id
 }
 resource "yandex_vpc_subnet" "subnet-1" {
-  name           = "filonov-subnet"
+  name           = "vazhenina-subnet"
   zone           = "ru-central1-a"
   network_id     = data.yandex_vpc_network.existing.id
   v4_cidr_blocks = ["192.168.199.0/24"]
 }
 
 resource "yandex_vpc_security_group" "group1" {
-  name        = "filonov-securuty-group"
+  name        = "vazhenina-security-group"
   network_id  = data.yandex_vpc_network.existing.id
 }
 
