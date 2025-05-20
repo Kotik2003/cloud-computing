@@ -40,7 +40,7 @@ resource "openstack_networking_secgroup_rule_v2" "sg_ssh_rule" {
 }
 
 # https://registry.terraform.io/providers/terraform-provider-openstack/openstack/latest/docs/resources/compute_instance_v2
-resource "openstack_compute_instance_v2" "filonov_server" {
+resource "openstack_compute_instance_v2" "vazhenina_server" {
   name = "vazhenina-server-trfm"
   image_name = var.image_name
   flavor_name = var.server_flavor
