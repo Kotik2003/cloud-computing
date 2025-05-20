@@ -12,7 +12,7 @@ variable "server_flavor" {
 }
 
 variable "key_pair" {
-  default = "filonov"
+  default = "vazhenina"
 }
 
 # Network params
