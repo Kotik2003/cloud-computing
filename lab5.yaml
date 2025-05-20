@@ -116,5 +116,5 @@
          terraform:
            project_path: "{{ terraform_path }}"
            state: absent
-           targets: openstack_compute_instance_v2.filonov_server
+           targets: openstack_compute_instance_v2.vazhenina_server
          delegate_to: localhost
