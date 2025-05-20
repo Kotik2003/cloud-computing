@@ -2,7 +2,7 @@
 
 variable "image_name" {
   type    = string
-  default = "ununtu-22.04"
+  default = "ubuntu-22.04"
 }
 
 #### VM parameters
